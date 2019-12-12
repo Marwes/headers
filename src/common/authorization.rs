@@ -59,12 +59,12 @@ impl Authorization<Bearer> {
     }
 }
 
-impl<C: Credentials> ::Header for Authorization<C> {
+impl<C: Credentials> ::Header<'value> for Authorization<C> {
     fn name() -> &'static ::HeaderName {
         &::http::header::AUTHORIZATION
     }
 
-    fn decode<'i, I: Iterator<Item = &'i HeaderValue>>(values: &mut I) -> Result<Self, ::Error> {
+    fn decode<I: Iterator<Item = &'value HeaderValue>>(values: &mut I) -> Result<Self, ::Error> {
         values
             .next()
             .and_then(|val| {

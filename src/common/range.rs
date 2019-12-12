@@ -82,12 +82,12 @@ fn parse_bound(s: &str) -> Option<Bound<u64>> {
     s.parse().ok().map(Bound::Included)
 }
 
-impl ::Header for Range {
+impl ::Header<'value> for Range {
     fn name() -> &'static ::HeaderName {
         &::http::header::RANGE
     }
 
-    fn decode<'i, I: Iterator<Item = &'i ::HeaderValue>>(values: &mut I) -> Result<Self, ::Error> {
+    fn decode<I: Iterator<Item = &'value ::HeaderValue>>(values: &mut I) -> Result<Self, ::Error> {
         values
             .next()
             .and_then(|val| {
@@ -281,7 +281,7 @@ fn from_comma_delimited<T: FromStr>(s: &str) -> Vec<T> {
         .collect()
 }
 
-impl Header for Range {
+impl Header<'value> for Range {
 
     fn header_name() -> &'static str {
         static NAME: &'static str = "Range";

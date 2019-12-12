@@ -19,12 +19,12 @@ impl Host {
     }
 }
 
-impl ::Header for Host {
+impl ::Header<'value> for Host {
     fn name() -> &'static ::HeaderName {
         &::http::header::HOST
     }
 
-    fn decode<'i, I: Iterator<Item = &'i ::HeaderValue>>(values: &mut I) -> Result<Self, ::Error> {
+    fn decode<I: Iterator<Item = &'value ::HeaderValue>>(values: &mut I) -> Result<Self, ::Error> {
         values
             .next()
             .cloned()

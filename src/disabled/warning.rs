@@ -88,7 +88,7 @@ pub struct Warning {
     pub date: Option<HttpDate>
 }
 
-impl Header for Warning {
+impl Header<'value> for Warning {
     fn header_name() -> &'static str {
         static NAME: &'static str = "Warning";
         NAME

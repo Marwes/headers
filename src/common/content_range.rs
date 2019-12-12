@@ -95,12 +95,12 @@ impl ContentRange {
     }
 }
 
-impl ::Header for ContentRange {
+impl ::Header<'value> for ContentRange {
     fn name() -> &'static ::HeaderName {
         &::http::header::CONTENT_RANGE
     }
 
-    fn decode<'i, I: Iterator<Item = &'i HeaderValue>>(values: &mut I) -> Result<Self, ::Error> {
+    fn decode<I: Iterator<Item = &'value HeaderValue>>(values: &mut I) -> Result<Self, ::Error> {
         values
             .next()
             .and_then(|v| v.to_str().ok())

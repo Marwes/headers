@@ -40,12 +40,12 @@ use {Header, HeaderValue};
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct ContentLength(pub u64);
 
-impl Header for ContentLength {
+impl Header<'value> for ContentLength {
     fn name() -> &'static ::http::header::HeaderName {
         &::http::header::CONTENT_LENGTH
     }
 
-    fn decode<'i, I: Iterator<Item = &'i HeaderValue>>(values: &mut I) -> Result<Self, ::Error> {
+    fn decode<I: Iterator<Item = &'value HeaderValue>>(values: &mut I) -> Result<Self, ::Error> {
         // If multiple Content-Length headers were sent, everything can still
         // be alright if they all contain the same value, and all parse
         // correctly. If not, then it's an error.

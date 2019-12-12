@@ -7,12 +7,12 @@ impl SecWebsocketVersion {
     pub const V13: SecWebsocketVersion = SecWebsocketVersion(13);
 }
 
-impl ::Header for SecWebsocketVersion {
+impl ::Header<'value> for SecWebsocketVersion {
     fn name() -> &'static ::HeaderName {
         &::http::header::SEC_WEBSOCKET_VERSION
     }
 
-    fn decode<'i, I: Iterator<Item = &'i ::HeaderValue>>(values: &mut I) -> Result<Self, ::Error> {
+    fn decode<I: Iterator<Item = &'value ::HeaderValue>>(values: &mut I) -> Result<Self, ::Error> {
         values
             .next()
             .and_then(|value| {

@@ -77,9 +77,9 @@ impl ReferrerPolicy {
 }
 
 impl ::util::TryFromValues for Policy {
-    fn try_from_values<'i, I>(values: &mut I) -> Result<Self, ::Error>
+    fn try_from_values<I>(values: &mut I) -> Result<Self, ::Error>
     where
-        I: Iterator<Item = &'i HeaderValue>,
+        I: Iterator<Item = &'value HeaderValue>,
     {
         // See https://www.w3.org/TR/referrer-policy/#determine-policy-for-token
         // tl;dr - Pick *last* known policy in the list
@@ -118,9 +118,9 @@ impl<'a> From<&'a Policy> for HeaderValue {
     }
 }
 
-fn csv<'i, I>(values: I) -> impl Iterator<Item=&'i str>
+fn csv<I>(values: I) -> impl Iterator<Item=&'value str>
 where
-    I: Iterator<Item = &'i HeaderValue>,
+    I: Iterator<Item = &'value HeaderValue>,
 {
     values
         .flat_map(|value| {

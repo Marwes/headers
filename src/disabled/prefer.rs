@@ -53,7 +53,7 @@ pub struct Prefer(pub Vec<Preference>);
 
 __hyper__deref!(Prefer => Vec<Preference>);
 
-impl Header for Prefer {
+impl Header<'value> for Prefer {
     fn header_name() -> &'static str {
         static NAME: &'static str = "Prefer";
         NAME

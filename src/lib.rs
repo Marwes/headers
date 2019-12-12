@@ -33,14 +33,14 @@
 //!
 //! struct Dnt(bool);
 //!
-//! impl Header for Dnt {
+//! impl Header<'value> for Dnt {
 //!     fn name() -> &'static HeaderName {
 //!          &http::header::DNT
 //!     }
 //!
-//!     fn decode<'i, I>(values: &mut I) -> Result<Self, headers::Error>
+//!     fn decode<I>(values: &mut I) -> Result<Self, headers::Error>
 //!     where
-//!         I: Iterator<Item = &'i HeaderValue>,
+//!         I: Iterator<Item = &'value HeaderValue>,
 //!     {
 //!         let value = values
 //!             .next()

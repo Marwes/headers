@@ -116,12 +116,12 @@ fn from_str(s: &str) -> Result<StrictTransportSecurity, ::Error> {
         .ok_or_else(::Error::invalid)
 }
 
-impl ::Header for StrictTransportSecurity {
+impl ::Header<'value> for StrictTransportSecurity {
     fn name() -> &'static ::HeaderName {
         &::http::header::STRICT_TRANSPORT_SECURITY
     }
 
-    fn decode<'i, I: Iterator<Item = &'i ::HeaderValue>>(values: &mut I) -> Result<Self, ::Error> {
+    fn decode<I: Iterator<Item = &'value ::HeaderValue>>(values: &mut I) -> Result<Self, ::Error> {
         values
             .just_one()
             .and_then(|v| v.to_str().ok())

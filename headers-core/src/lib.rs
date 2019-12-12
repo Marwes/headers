@@ -13,22 +13,22 @@ extern crate http;
 
 pub use http::header::{self, HeaderName, HeaderValue};
 
-use std::fmt::{self, Display, Formatter};
 use std::error;
+use std::fmt::{self, Display, Formatter};
 
 /// A trait for any object that will represent a header field and value.
 ///
 /// This trait represents the construction and identification of headers,
 /// and contains trait-object unsafe methods.
-pub trait Header {
+pub trait Header<'value> {
     /// The name of this header.
     fn name() -> &'static HeaderName;
 
     /// Decode this type from an iterator of `HeaderValue`s.
-    fn decode<'i, I>(values: &mut I) -> Result<Self, Error>
+    fn decode<I>(values: &mut I) -> Result<Self, Error>
     where
         Self: Sized,
-        I: Iterator<Item = &'i HeaderValue>;
+        I: Iterator<Item = &'value HeaderValue>;
 
     /// Encode this type to a `HeaderMap`.
     ///

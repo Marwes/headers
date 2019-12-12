@@ -28,12 +28,12 @@ use ::{Header, HeaderName, HeaderValue};
 #[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub struct AccessControlRequestMethod(Method);
 
-impl Header for AccessControlRequestMethod {
+impl Header<'value> for AccessControlRequestMethod {
     fn name() -> &'static HeaderName {
         &::http::header::ACCESS_CONTROL_REQUEST_METHOD
     }
 
-    fn decode<'i, I: Iterator<Item = &'i HeaderValue>>(values: &mut I) -> Result<Self, ::Error> {
+    fn decode<I: Iterator<Item = &'value HeaderValue>>(values: &mut I) -> Result<Self, ::Error> {
         values.next()
             .and_then(|value| {
                 Method::from_bytes(value.as_bytes()).ok()

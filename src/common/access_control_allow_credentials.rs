@@ -33,12 +33,12 @@ use ::{Header, HeaderName, HeaderValue};
 #[derive(Clone, PartialEq, Eq, Debug)]
 pub struct AccessControlAllowCredentials;
 
-impl Header for AccessControlAllowCredentials {
+impl Header<'value> for AccessControlAllowCredentials {
     fn name() -> &'static HeaderName {
         &::http::header::ACCESS_CONTROL_ALLOW_CREDENTIALS
     }
 
-    fn decode<'i, I: Iterator<Item = &'i HeaderValue>>(values: &mut I) -> Result<Self, ::Error> {
+    fn decode<I: Iterator<Item = &'value HeaderValue>>(values: &mut I) -> Result<Self, ::Error> {
         values
             .next()
             .and_then(|value| {

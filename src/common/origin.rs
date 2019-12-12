@@ -157,9 +157,9 @@ impl OriginOrNull {
 }
 
 impl TryFromValues for OriginOrNull {
-    fn try_from_values<'i, I>(values: &mut I) -> Result<Self, ::Error>
+    fn try_from_values<I>(values: &mut I) -> Result<Self, ::Error>
     where
-        I: Iterator<Item = &'i HeaderValue>,
+        I: Iterator<Item = &'value HeaderValue>,
     {
         values
             .just_one()

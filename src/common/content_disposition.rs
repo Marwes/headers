@@ -90,12 +90,12 @@ impl ContentDisposition {
     }
 }
 
-impl ::Header for ContentDisposition {
+impl ::Header<'value> for ContentDisposition {
     fn name() -> &'static ::HeaderName {
         &::http::header::CONTENT_DISPOSITION
     }
 
-    fn decode<'i, I: Iterator<Item = &'i ::HeaderValue>>(values: &mut I) -> Result<Self, ::Error> {
+    fn decode<I: Iterator<Item = &'value ::HeaderValue>>(values: &mut I) -> Result<Self, ::Error> {
         //TODO: parse harder
         values
             .next()
@@ -148,7 +148,7 @@ pub struct ContentDisposition {
     pub parameters: Vec<DispositionParam>,
 }
 
-impl Header for ContentDisposition {
+impl Header<'value> for ContentDisposition {
     fn header_name() -> &'static str {
         static NAME: &'static str = "Content-Disposition";
         NAME

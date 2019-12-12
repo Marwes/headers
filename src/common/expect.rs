@@ -27,12 +27,12 @@ impl Expect {
     pub const CONTINUE: Expect = Expect(());
 }
 
-impl ::Header for Expect {
+impl ::Header<'value> for Expect {
     fn name() -> &'static ::HeaderName {
         &::http::header::EXPECT
     }
 
-    fn decode<'i, I: Iterator<Item = &'i ::HeaderValue>>(values: &mut I) -> Result<Self, ::Error> {
+    fn decode<I: Iterator<Item = &'value ::HeaderValue>>(values: &mut I) -> Result<Self, ::Error> {
         values
             .just_one()
             .and_then(|value| {

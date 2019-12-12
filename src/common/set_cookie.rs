@@ -55,12 +55,12 @@
 #[derive(Clone, Debug)]
 pub struct SetCookie(Vec<::HeaderValue>);
 
-impl ::Header for SetCookie {
+impl ::Header<'value> for SetCookie {
     fn name() -> &'static ::HeaderName {
         &::http::header::SET_COOKIE
     }
 
-    fn decode<'i, I: Iterator<Item = &'i ::HeaderValue>>(values: &mut I) -> Result<Self, ::Error> {
+    fn decode<I: Iterator<Item = &'value ::HeaderValue>>(values: &mut I) -> Result<Self, ::Error> {
         let vec = values
             .cloned()
             .collect::<Vec<_>>();

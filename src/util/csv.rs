@@ -1,9 +1,9 @@
 use std::fmt;
 
 /// Reads a comma-delimited raw header into a Vec.
-pub(crate) fn from_comma_delimited<'i, I, T, E>(values: &mut I) -> Result<E, ::Error>
+pub(crate) fn from_comma_delimited<I, T, E>(values: &mut I) -> Result<E, ::Error>
 where
-    I: Iterator<Item = &'i ::HeaderValue>,
+    I: Iterator<Item = &'value ::HeaderValue>,
     T: ::std::str::FromStr,
     E: ::std::iter::FromIterator<T>,
 {

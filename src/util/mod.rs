@@ -54,14 +54,14 @@ macro_rules! error_type {
 
 macro_rules! derive_header {
     ($type:ident(_), name: $name:ident) => (
-        impl crate::Header for $type {
+        impl crate::Header<'value> for $type {
             fn name() -> &'static ::http::header::HeaderName {
                 &::http::header::$name
             }
 
-            fn decode<'i, I>(values: &mut I) -> Result<Self, ::Error>
+            fn decode<I>(values: &mut I) -> Result<Self, ::Error>
             where
-                I: Iterator<Item = &'i ::http::header::HeaderValue>,
+                I: Iterator<Item = &'value ::http::header::HeaderValue>,
             {
                 ::util::TryFromValues::try_from_values(values)
                     .map($type)
@@ -77,16 +77,16 @@ macro_rules! derive_header {
 /// A helper trait for use when deriving `Header`.
 pub(crate) trait TryFromValues: Sized {
     /// Try to convert from the values into an instance of `Self`.
-    fn try_from_values<'i, I>(values: &mut I) -> Result<Self, ::Error>
+    fn try_from_values<I>(values: &mut I) -> Result<Self, ::Error>
     where
         Self: Sized,
-        I: Iterator<Item = &'i HeaderValue>;
+        I: Iterator<Item = &'value HeaderValue>;
 }
 
 impl TryFromValues for HeaderValue {
-    fn try_from_values<'i, I>(values: &mut I) -> Result<Self, ::Error>
+    fn try_from_values<I>(values: &mut I) -> Result<Self, ::Error>
     where
-        I: Iterator<Item = &'i HeaderValue>,
+        I: Iterator<Item = &'value HeaderValue>,
     {
         values
             .next()

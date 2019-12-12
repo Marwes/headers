@@ -385,7 +385,7 @@ impl LinkValue {
 // Trait implementations
 ////////////////////////////////////////////////////////////////////////////////
 
-impl Header for Link {
+impl Header<'value> for Link {
     fn header_name() -> &'static str {
         static NAME: &'static str = "Link";
         NAME
