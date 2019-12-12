@@ -1,19 +1,15 @@
 use std::fmt;
 use std::time::Duration;
 
-use {HeaderValue};
 use util::IterExt;
+use HeaderValue;
 
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub(crate) struct Seconds(Duration);
 
 impl Seconds {
     pub(crate) fn from_val(val: &HeaderValue) -> Option<Self> {
-        let secs = val
-            .to_str()
-            .ok()?
-            .parse()
-            .ok()?;
+        let secs = val.to_str().ok()?.parse().ok()?;
 
         Some(Seconds(Duration::from_secs(secs)))
     }
@@ -23,7 +19,7 @@ impl Seconds {
     }
 }
 
-impl super::TryFromValues<'value> for Seconds {
+impl<'value> super::TryFromValues<'value> for Seconds {
     fn try_from_values<I>(values: &mut I) -> Result<Self, ::Error>
     where
         I: Iterator<Item = &'value HeaderValue>,

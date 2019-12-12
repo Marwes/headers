@@ -95,7 +95,7 @@ impl ContentRange {
     }
 }
 
-impl ::Header<'value> for ContentRange {
+impl<'value> ::Header<'value> for ContentRange {
     fn name() -> &'static ::HeaderName {
         &::http::header::CONTENT_RANGE
     }

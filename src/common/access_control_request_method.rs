@@ -28,7 +28,7 @@ use ::{Header, HeaderName, HeaderValue};
 #[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub struct AccessControlRequestMethod(Method);
 
-impl Header<'value> for AccessControlRequestMethod {
+impl<'value> Header<'value> for AccessControlRequestMethod {
     fn name() -> &'static HeaderName {
         &::http::header::ACCESS_CONTROL_REQUEST_METHOD
     }

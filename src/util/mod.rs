@@ -81,7 +81,7 @@ pub(crate) trait TryFromValues<'value>: Sized {
         I: Iterator<Item = &'value HeaderValue>;
 }
 
-impl TryFromValues<'value> for HeaderValue {
+impl<'value> TryFromValues<'value> for HeaderValue {
     fn try_from_values<I>(values: &mut I) -> Result<Self, ::Error>
     where
         I: Iterator<Item = &'value HeaderValue>,

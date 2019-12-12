@@ -33,7 +33,7 @@ use ::{Header, HeaderName, HeaderValue};
 #[derive(Clone, PartialEq, Eq, Debug)]
 pub struct AccessControlAllowCredentials;
 
-impl Header<'value> for AccessControlAllowCredentials {
+impl<'value> Header<'value> for AccessControlAllowCredentials {
     fn name() -> &'static HeaderName {
         &::http::header::ACCESS_CONTROL_ALLOW_CREDENTIALS
     }

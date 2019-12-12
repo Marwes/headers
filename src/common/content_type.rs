@@ -94,7 +94,7 @@ impl ContentType {
     }
 }
 
-impl ::Header<'value> for ContentType {
+impl<'value> ::Header<'value> for ContentType {
     fn name() -> &'static ::HeaderName {
         &::http::header::CONTENT_TYPE
     }

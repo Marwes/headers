@@ -1,49 +1,46 @@
-use http;
 use super::{Error, Header, HeaderValue};
+use http;
 
 /// An extension trait adding "typed" methods to `http::HeaderMap`.
 pub trait HeaderMapExt: self::sealed::Sealed {
     /// Inserts the typed `Header` into this `HeaderMap`.
-    fn typed_insert<H>(&mut self, header: H)
+    fn typed_insert<'value, H>(&'value mut self, header: H)
     where
-        H: Header;
+        H: Header<'value>;
 
     /// Tries to find the header by name, and then decode it into `H`.
-    fn typed_get<H>(&self) -> Option<H>
+    fn typed_get<'value, H>(&'value self) -> Option<H>
     where
-        H: Header;
+        H: Header<'value>;
 
     /// Tries to find the header by name, and then decode it into `H`.
-    fn typed_try_get<H>(&self) -> Result<Option<H>, Error>
+    fn typed_try_get<'value, H>(&'value self) -> Result<Option<H>, Error>
     where
-        H: Header;
+        H: Header<'value>;
 }
 
 impl HeaderMapExt for http::HeaderMap {
-    fn typed_insert<H>(&mut self, header: H)
+    fn typed_insert<'value, H>(&'value mut self, header: H)
     where
-        H: Header,
+        H: Header<'value>,
     {
-        let entry = self
-            .entry(H::name())
-            .expect("HeaderName is always valid");
+        let entry = self.entry(H::name()).expect("HeaderName is always valid");
         let mut values = ToValues {
             state: State::First(entry),
         };
         header.encode(&mut values);
     }
 
-    fn typed_get<H>(&self) -> Option<H>
+    fn typed_get<'value, H>(&'value self) -> Option<H>
     where
-        H: Header,
+        H: Header<'value>,
     {
-        HeaderMapExt::typed_try_get(self)
-            .unwrap_or(None)
+        HeaderMapExt::typed_try_get(self).unwrap_or(None)
     }
 
-    fn typed_try_get<H>(&self) -> Result<Option<H>, Error>
+    fn typed_try_get<'value, H>(&'value self) -> Result<Option<H>, Error>
     where
-        H: Header,
+        H: Header<'value>,
     {
         let mut values = self.get_all(H::name()).iter();
         if values.size_hint() == (0, Some(0)) {
@@ -66,25 +63,24 @@ enum State<'a> {
 }
 
 impl<'a> Extend<HeaderValue> for ToValues<'a> {
-    fn extend<T: IntoIterator<Item=HeaderValue>>(&mut self, iter: T) {
+    fn extend<T: IntoIterator<Item = HeaderValue>>(&mut self, iter: T) {
         for value in iter {
             let entry = match ::std::mem::replace(&mut self.state, State::Tmp) {
                 State::First(http::header::Entry::Occupied(mut e)) => {
                     e.insert(value);
                     e
-                },
+                }
                 State::First(http::header::Entry::Vacant(e)) => e.insert_entry(value),
                 State::Latter(mut e) => {
                     e.append(value);
                     e
-                },
+                }
                 State::Tmp => unreachable!("ToValues State::Tmp"),
             };
             self.state = State::Latter(entry);
         }
     }
 }
-
 
 mod sealed {
     pub trait Sealed {}

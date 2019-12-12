@@ -1,4 +1,4 @@
-use {HeaderValue};
+use HeaderValue;
 
 /// `Referrer-Policy` header, part of
 /// [Referrer Policy](https://www.w3.org/TR/referrer-policy/#referrer-policy-header)
@@ -73,10 +73,11 @@ impl ReferrerPolicy {
     pub const STRICT_ORIGIN: Self = ReferrerPolicy(Policy::StrictOrigin);
 
     ///`strict-origin-when-cross-origin`
-    pub const STRICT_ORIGIN_WHEN_CROSS_ORIGIN: Self = ReferrerPolicy(Policy::StrictOriginWhenCrossOrigin);
+    pub const STRICT_ORIGIN_WHEN_CROSS_ORIGIN: Self =
+        ReferrerPolicy(Policy::StrictOriginWhenCrossOrigin);
 }
 
-impl ::util::TryFromValues<'value> for Policy {
+impl<'value> ::util::TryFromValues<'value> for Policy {
     fn try_from_values<I>(values: &mut I) -> Result<Self, ::Error>
     where
         I: Iterator<Item = &'value HeaderValue>,
@@ -86,7 +87,7 @@ impl ::util::TryFromValues<'value> for Policy {
         let mut known = None;
         for s in csv(values) {
             known = Some(match s {
-                "no-referrer" | "never" =>  Policy::NoReferrer,
+                "no-referrer" | "never" => Policy::NoReferrer,
                 "no-referrer-when-downgrade" | "default" => Policy::NoReferrerWhenDowngrade,
                 "same-origin" => Policy::SameOrigin,
                 "origin" => Policy::Origin,
@@ -98,8 +99,7 @@ impl ::util::TryFromValues<'value> for Policy {
             });
         }
 
-        known
-            .ok_or_else(::Error::invalid)
+        known.ok_or_else(::Error::invalid)
     }
 }
 
@@ -118,30 +118,24 @@ impl<'a> From<&'a Policy> for HeaderValue {
     }
 }
 
-fn csv<I>(values: I) -> impl Iterator<Item=&'value str>
+fn csv<'value, I>(values: I) -> impl Iterator<Item = &'value str>
 where
     I: Iterator<Item = &'value HeaderValue>,
 {
-    values
-        .flat_map(|value| {
-            value
-                .to_str()
-                .into_iter()
-                .flat_map(|string| {
-                    string
-                        .split(',')
-                        .filter_map(|x| match x.trim() {
-                            "" => None,
-                            y => Some(y),
-                        })
-                })
+    values.flat_map(|value| {
+        value.to_str().into_iter().flat_map(|string| {
+            string.split(',').filter_map(|x| match x.trim() {
+                "" => None,
+                y => Some(y),
+            })
         })
+    })
 }
 
 #[cfg(test)]
 mod tests {
-    use super::ReferrerPolicy;
     use super::super::test_decode;
+    use super::ReferrerPolicy;
 
     #[test]
     fn decode_as_last_policy() {
@@ -181,10 +175,7 @@ mod tests {
 
     #[test]
     fn decode_unknown() {
-        assert_eq!(
-            test_decode::<ReferrerPolicy>(&["nope"]),
-            None,
-        );
+        assert_eq!(test_decode::<ReferrerPolicy>(&["nope"]), None,);
     }
 
     #[test]

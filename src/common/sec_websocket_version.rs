@@ -7,7 +7,7 @@ impl SecWebsocketVersion {
     pub const V13: SecWebsocketVersion = SecWebsocketVersion(13);
 }
 
-impl ::Header<'value> for SecWebsocketVersion {
+impl<'value> ::Header<'value> for SecWebsocketVersion {
     fn name() -> &'static ::HeaderName {
         &::http::header::SEC_WEBSOCKET_VERSION
     }

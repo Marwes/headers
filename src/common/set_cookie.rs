@@ -55,7 +55,7 @@
 #[derive(Clone, Debug)]
 pub struct SetCookie(Vec<::HeaderValue>);
 
-impl ::Header<'value> for SetCookie {
+impl<'value> ::Header<'value> for SetCookie {
     fn name() -> &'static ::HeaderName {
         &::http::header::SET_COOKIE
     }

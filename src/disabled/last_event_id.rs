@@ -15,7 +15,7 @@ use util::HeaderValueString;
 /// The spec is a String with the id of the last event, it can be
 /// an empty string which acts a sort of "reset".
 // NOTE: This module is disabled since there is no const LAST_EVENT_ID to be
-// used for the `impl Header`. It should be possible to enable this module
+// used for the `impl<'value> Header`. It should be possible to enable this module
 // when `HeaderName::from_static` can become a `const fn`.
 #[derive(Clone, Debug, PartialEq, Header)]
 pub struct LastEventId(HeaderValueString);

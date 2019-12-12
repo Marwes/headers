@@ -33,7 +33,7 @@
 //!
 //! struct Dnt(bool);
 //!
-//! impl Header<'value> for Dnt {
+//! impl<'value> Header<'value> for Dnt {
 //!     fn name() -> &'static HeaderName {
 //!          &http::header::DNT
 //!     }

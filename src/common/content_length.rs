@@ -40,7 +40,7 @@ use {Header, HeaderValue};
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct ContentLength(pub u64);
 
-impl Header<'value> for ContentLength {
+impl<'value> Header<'value> for ContentLength {
     fn name() -> &'static ::http::header::HeaderName {
         &::http::header::CONTENT_LENGTH
     }

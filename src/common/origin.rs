@@ -156,7 +156,7 @@ impl OriginOrNull {
     }
 }
 
-impl TryFromValues<'value> for OriginOrNull {
+impl<'value> TryFromValues<'value> for OriginOrNull {
     fn try_from_values<I>(values: &mut I) -> Result<Self, ::Error>
     where
         I: Iterator<Item = &'value HeaderValue>,

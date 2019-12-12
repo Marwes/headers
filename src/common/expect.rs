@@ -27,7 +27,7 @@ impl Expect {
     pub const CONTINUE: Expect = Expect(());
 }
 
-impl ::Header<'value> for Expect {
+impl<'value> ::Header<'value> for Expect {
     fn name() -> &'static ::HeaderName {
         &::http::header::EXPECT
     }

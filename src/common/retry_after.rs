@@ -52,7 +52,7 @@ impl RetryAfter {
     }
 }
 
-impl TryFromValues<'value> for After {
+impl<'value> TryFromValues<'value> for After {
     fn try_from_values<I>(values: &mut I) -> Result<Self, ::Error>
     where
         I: Iterator<Item = &'value HeaderValue>,

@@ -82,7 +82,7 @@ fn parse_bound(s: &str) -> Option<Bound<u64>> {
     s.parse().ok().map(Bound::Included)
 }
 
-impl ::Header<'value> for Range {
+impl<'value> ::Header<'value> for Range {
     fn name() -> &'static ::HeaderName {
         &::http::header::RANGE
     }
@@ -281,7 +281,7 @@ fn from_comma_delimited<T: FromStr>(s: &str) -> Vec<T> {
         .collect()
 }
 
-impl Header<'value> for Range {
+impl<'value> Header<'value> for Range {
 
     fn header_name() -> &'static str {
         static NAME: &'static str = "Range";

@@ -24,14 +24,13 @@ use super::authorization::{Authorization, Credentials};
 #[derive(Clone, PartialEq, Debug)]
 pub struct ProxyAuthorization<C: Credentials>(pub C);
 
-impl<C: Credentials> ::Header<'value> for ProxyAuthorization<C> {
+impl<'value, C: Credentials> ::Header<'value> for ProxyAuthorization<C> {
     fn name() -> &'static ::HeaderName {
         &::http::header::PROXY_AUTHORIZATION
     }
 
     fn decode<I: Iterator<Item = &'value ::HeaderValue>>(values: &mut I) -> Result<Self, ::Error> {
-        Authorization::decode(values)
-            .map(|auth| ProxyAuthorization(auth.0))
+        Authorization::decode(values).map(|auth| ProxyAuthorization(auth.0))
     }
 
     fn encode<E: Extend<::HeaderValue>>(&self, values: &mut E) {
@@ -46,4 +45,3 @@ impl<C: Credentials> ::Header<'value> for ProxyAuthorization<C> {
         values.extend(::std::iter::once(value));
     }
 }
-

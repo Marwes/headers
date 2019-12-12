@@ -90,7 +90,7 @@ impl ContentDisposition {
     }
 }
 
-impl ::Header<'value> for ContentDisposition {
+impl<'value> ::Header<'value> for ContentDisposition {
     fn name() -> &'static ::HeaderName {
         &::http::header::CONTENT_DISPOSITION
     }
@@ -148,7 +148,7 @@ pub struct ContentDisposition {
     pub parameters: Vec<DispositionParam>,
 }
 
-impl Header<'value> for ContentDisposition {
+impl<'value> Header<'value> for ContentDisposition {
     fn header_name() -> &'static str {
         static NAME: &'static str = "Content-Disposition";
         NAME

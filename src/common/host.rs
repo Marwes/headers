@@ -19,7 +19,7 @@ impl Host {
     }
 }
 
-impl ::Header<'value> for Host {
+impl<'value> ::Header<'value> for Host {
     fn name() -> &'static ::HeaderName {
         &::http::header::HOST
     }

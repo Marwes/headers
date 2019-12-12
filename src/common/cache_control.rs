@@ -184,7 +184,7 @@ impl CacheControl {
     }
 }
 
-impl ::Header<'value> for CacheControl {
+impl<'value> ::Header<'value> for CacheControl {
     fn name() -> &'static ::HeaderName {
         &::http::header::CACHE_CONTROL
     }

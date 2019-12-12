@@ -116,7 +116,7 @@ fn from_str(s: &str) -> Result<StrictTransportSecurity, ::Error> {
         .ok_or_else(::Error::invalid)
 }
 
-impl ::Header<'value> for StrictTransportSecurity {
+impl<'value> ::Header<'value> for StrictTransportSecurity {
     fn name() -> &'static ::HeaderName {
         &::http::header::STRICT_TRANSPORT_SECURITY
     }

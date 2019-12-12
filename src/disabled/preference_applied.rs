@@ -52,7 +52,7 @@ pub struct PreferenceApplied(pub Vec<Preference>);
 
 __hyper__deref!(PreferenceApplied => Vec<Preference>);
 
-impl Header<'value> for PreferenceApplied {
+impl<'value> Header<'value> for PreferenceApplied {
     fn header_name() -> &'static str {
         static NAME: &'static str = "Preference-Applied";
         NAME

@@ -1,8 +1,8 @@
 use std::time::SystemTime;
 
+use super::{ETag, LastModified};
 use ::HeaderValue;
 use util::{EntityTag, HttpDate};
-use super::{LastModified, ETag};
 
 /// `If-Range` header, defined in [RFC7233](http://tools.ietf.org/html/rfc7233#section-3.2)
 ///
@@ -77,7 +77,7 @@ enum IfRange_ {
     Date(HttpDate),
 }
 
-impl ::util::TryFromValues<'value> for IfRange_ {
+impl<'value> ::util::TryFromValues<'value> for IfRange_ {
     fn try_from_values<I>(values: &mut I) -> Result<Self, ::Error>
     where
         I: Iterator<Item = &'value HeaderValue>,
@@ -104,8 +104,6 @@ impl<'a> From<&'a IfRange_> for HeaderValue {
         }
     }
 }
-
-
 
 /*
 #[cfg(test)]
