@@ -48,7 +48,7 @@ impl HttpDate {
 #[derive(Debug)]
 pub struct Error(());
 
-impl super::TryFromValues for HttpDate {
+impl super::TryFromValues<'value> for HttpDate {
     fn try_from_values<I>(values: &mut I) -> Result<Self, ::Error>
     where
         I: Iterator<Item = &'value HeaderValue>,

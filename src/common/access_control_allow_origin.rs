@@ -59,7 +59,7 @@ impl AccessControlAllowOrigin {
     }
 }
 
-impl TryFromValues for OriginOrAny {
+impl TryFromValues<'value> for OriginOrAny {
     fn try_from_values<I>(values: &mut I) -> Result<Self, ::Error>
     where
         I: Iterator<Item = &'value HeaderValue>,

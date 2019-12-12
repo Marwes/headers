@@ -142,7 +142,7 @@ impl EntityTag {
     }
 }
 
-impl super::TryFromValues for EntityTag {
+impl super::TryFromValues<'value> for EntityTag {
     fn try_from_values<I>(values: &mut I) -> Result<Self, ::Error>
     where
         I: Iterator<Item = &'value HeaderValue>,

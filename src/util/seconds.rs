@@ -23,7 +23,7 @@ impl Seconds {
     }
 }
 
-impl super::TryFromValues for Seconds {
+impl super::TryFromValues<'value> for Seconds {
     fn try_from_values<I>(values: &mut I) -> Result<Self, ::Error>
     where
         I: Iterator<Item = &'value HeaderValue>,
