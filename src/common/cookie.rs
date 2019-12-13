@@ -1,5 +1,4 @@
-
-use util::{FlatCsv, SemiColon};
+use util::{FlatCsvRef, SemiColon};
 
 /// `Cookie` header, defined in [RFC6265](http://tools.ietf.org/html/rfc6265#section-5.4)
 ///
@@ -15,14 +14,26 @@ use util::{FlatCsv, SemiColon};
 /// * `SID=31d4d96e407aad42; lang=en-US`
 ///
 #[derive(Clone, Debug)]
-pub struct Cookie(FlatCsv<SemiColon>);
+pub struct Cookie<'s>(FlatCsvRef<'s, SemiColon>);
 
-derive_header! {
-    Cookie(_),
-    name: COOKIE
+impl<'value> crate::Header<'value> for Cookie<'value> {
+    fn name() -> &'static ::http::header::HeaderName {
+        &http::header::COOKIE
+    }
+
+    fn decode<I>(values: &mut I) -> Result<Self, ::Error>
+    where
+        I: Iterator<Item = &'value ::http::header::HeaderValue>,
+    {
+        ::util::TryFromValues::try_from_values(values).map(Self)
+    }
+
+    fn encode<E: Extend<::HeaderValue>>(&self, values: &mut E) {
+        values.extend(::std::iter::once((&self.0).into()));
+    }
 }
 
-impl Cookie {
+impl<'s> Cookie<'s> {
     /// Lookup a value for a cookie name.
     ///
     /// # Example
@@ -55,17 +66,15 @@ impl Cookie {
     }
 
     /// Iterator the key-value pairs of this `Cookie` header.
-    pub fn iter(&self) -> impl Iterator<Item=(&str, &str)> {
-        self.0.iter()
-            .filter_map(|kv| {
-                let mut iter = kv.splitn(2, '=');
-                let key = iter.next()?.trim();
-                let val = iter.next()?.trim();
-                Some((key, val))
-            })
+    pub fn iter(&self) -> impl Iterator<Item = (&str, &str)> {
+        self.0.iter().filter_map(|kv| {
+            let mut iter = kv.splitn(2, '=');
+            let key = iter.next()?.trim();
+            let val = iter.next()?.trim();
+            Some((key, val))
+        })
     }
 }
-
 
 /*
 impl PartialEq for Cookie {
@@ -86,8 +95,8 @@ impl PartialEq for Cookie {
 
 #[cfg(test)]
 mod tests {
-    use super::Cookie;
     use super::super::test_decode;
+    use super::Cookie;
 
     #[test]
     fn test_parse() {
@@ -206,4 +215,3 @@ mod tests {
     }
     */
 }
-

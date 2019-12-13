@@ -1,3 +1,4 @@
+use std::borrow::Cow;
 use std::fmt;
 use std::iter::FromIterator;
 use std::marker::PhantomData;
@@ -131,6 +132,149 @@ impl<'a, Sep: Separator> FromIterator<&'a HeaderValue> for FlatCsv<Sep> {
 
 // TODO: would be great if there was a way to de-dupe these with above
 impl<Sep: Separator> FromIterator<HeaderValue> for FlatCsv<Sep> {
+    fn from_iter<I>(iter: I) -> Self
+    where
+        I: IntoIterator<Item = HeaderValue>,
+    {
+        let mut values = iter.into_iter();
+
+        // Common case is there is only 1 value, optimize for that
+        if let (1, Some(1)) = values.size_hint() {
+            return values.next().expect("size_hint claimed 1 item").into();
+        }
+
+        // Otherwise, there are multiple, so this should merge them into 1.
+        let bytes = values
+            .next()
+            .map(Bytes::from)
+            .unwrap_or_else(|| Bytes::new());
+
+        let mut buf = BytesMut::from(bytes);
+
+        for val in values {
+            buf.extend_from_slice(&[Sep::BYTE, b' ']);
+            buf.extend_from_slice(val.as_bytes());
+        }
+
+        let val =
+            HeaderValue::from_shared(buf.freeze()).expect("comma separated HeaderValues are valid");
+
+        val.into()
+    }
+}
+
+#[derive(Clone, PartialEq, Eq, Hash)]
+pub(crate) struct FlatCsvRef<'s, Sep = Comma> {
+    pub(crate) value: Cow<'s, HeaderValue>,
+    _marker: PhantomData<Sep>,
+}
+
+impl<'s, Sep: Separator> FlatCsvRef<'s, Sep> {
+    pub(crate) fn iter(&self) -> impl Iterator<Item = &str> {
+        self.value.to_str().ok().into_iter().flat_map(|value_str| {
+            let mut in_quotes = false;
+            value_str
+                .split(move |c| {
+                    if in_quotes {
+                        if c == '"' {
+                            in_quotes = false;
+                        }
+                        false // dont split
+                    } else {
+                        if c == Sep::CHAR {
+                            true // split
+                        } else {
+                            if c == '"' {
+                                in_quotes = true;
+                            }
+                            false // dont split
+                        }
+                    }
+                })
+                .map(|item| item.trim())
+        })
+    }
+}
+
+impl<'value, Sep: Separator> TryFromValues<'value> for FlatCsvRef<'value, Sep> {
+    fn try_from_values<I>(values: &mut I) -> Result<Self, ::Error>
+    where
+        I: Iterator<Item = &'value HeaderValue>,
+    {
+        let flat = values.collect();
+        Ok(flat)
+    }
+}
+
+impl<'s, Sep> From<&'s HeaderValue> for FlatCsvRef<'s, Sep> {
+    fn from(value: &'s HeaderValue) -> Self {
+        FlatCsvRef {
+            value: Cow::Borrowed(value),
+            _marker: PhantomData,
+        }
+    }
+}
+
+impl<'s, Sep> From<HeaderValue> for FlatCsvRef<'s, Sep> {
+    fn from(value: HeaderValue) -> Self {
+        FlatCsvRef {
+            value: Cow::Owned(value),
+            _marker: PhantomData,
+        }
+    }
+}
+
+impl<'a, Sep> From<&'a FlatCsvRef<'_, Sep>> for HeaderValue {
+    fn from(flat: &'a FlatCsvRef<Sep>) -> HeaderValue {
+        flat.value.clone().into_owned()
+    }
+}
+
+impl<Sep> fmt::Debug for FlatCsvRef<'_, Sep> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        fmt::Debug::fmt(&self.value, f)
+    }
+}
+
+impl<'a, Sep: Separator> FromIterator<&'a HeaderValue> for FlatCsvRef<'a, Sep> {
+    fn from_iter<I>(iter: I) -> Self
+    where
+        I: IntoIterator<Item = &'a HeaderValue>,
+    {
+        let mut values = iter.into_iter();
+
+        // Common case is there is only 1 value, optimize for that
+        if let (1, Some(1)) = values.size_hint() {
+            return values
+                .next()
+                .expect("size_hint claimed 1 item")
+                .clone()
+                .into();
+        }
+
+        // Otherwise, there are multiple, so this should merge them into 1.
+        let bytes = values
+            .next()
+            .cloned()
+            .map(Bytes::from)
+            .unwrap_or_else(|| Bytes::new());
+
+        let mut buf = BytesMut::from(bytes);
+
+        for val in values {
+            buf.extend_from_slice(&[Sep::BYTE, b' ']);
+            buf.extend_from_slice(val.as_bytes());
+        }
+
+        let val =
+            HeaderValue::from_shared(buf.freeze()).expect("comma separated HeaderValues are valid");
+
+        val.into()
+    }
+}
+
+// TODO: would be great if there was a way to de-dupe these with above
+impl<'s, Sep: Separator> FromIterator<HeaderValue> for FlatCsvRef<'s, Sep> {
     fn from_iter<I>(iter: I) -> Self
     where
         I: IntoIterator<Item = HeaderValue>,

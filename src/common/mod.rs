@@ -69,7 +69,7 @@ pub use self::vary::Vary;
 //pub use self::warning::Warning;
 
 #[cfg(test)]
-fn test_decode<T: for<'value> ::Header<'value>>(values: &[&str]) -> Option<T> {
+fn test_decode<'value, T: ::Header<'value>>(values: &[&str]) -> Option<T> {
     use ::HeaderMapExt;
     let mut map = ::http::HeaderMap::new();
     for val in values {

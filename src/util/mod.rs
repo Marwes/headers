@@ -3,7 +3,7 @@ use ::HeaderValue;
 //pub use self::charset::Charset;
 //pub use self::encoding::Encoding;
 pub(crate) use self::entity::EntityTag;
-pub(crate) use self::flat_csv::{FlatCsv, SemiColon};
+pub(crate) use self::flat_csv::{FlatCsv, FlatCsvRef, SemiColon};
 pub(crate) use self::fmt::fmt;
 pub(crate) use self::http_date::HttpDate;
 pub(crate) use self::iter::IterExt;
